@@ -1,9 +1,9 @@
 package main
 
 import (
-    "log"
 	"io/ioutil"
-    "net/http"
+	"log"
+	"net/http"
 )
 
 var pixiv_domain = "https://i.pximg.net/"
@@ -11,12 +11,12 @@ var client = &http.Client{}
 
 func main() {
 	handler := http.HandlerFunc(Serve)
-	http.ListenAndServe(":8080", handler)
+	http.ListenAndServe(":80", handler)
 }
 
 func Serve(w http.ResponseWriter, r *http.Request) {
 	url := pixiv_domain + r.URL.Path
-    req, _ := http.NewRequest("GET", url, nil)
+	req, _ := http.NewRequest("GET", url, nil)
 	// In order to use the image link the referer header must be set
 	req.Header.Set("referer", "https://www.pixiv.net/")
 	res, _ := client.Do(req)
@@ -24,12 +24,12 @@ func Serve(w http.ResponseWriter, r *http.Request) {
 	// Ream image data
 	data, err := ioutil.ReadAll(res.Body)
 
-    if err != nil {
-        log.Fatalf("ioutil.ReadAll -> %v", err)
-    }
+	if err != nil {
+		log.Fatalf("ioutil.ReadAll -> %v", err)
+	}
 	res.Body.Close()
-    
-	// Map headers over to new response 
+
+	// Map headers over to new response
 	for key, header := range res.Header {
 		w.Header().Set(key, header[0])
 	}
