@@ -12,6 +12,7 @@ var client = &http.Client{}
 func main() {
 	handler := http.HandlerFunc(Serve)
 	http.ListenAndServe(":80", handler)
+	log.Printf("Started server")
 }
 
 func Serve(w http.ResponseWriter, r *http.Request) {
