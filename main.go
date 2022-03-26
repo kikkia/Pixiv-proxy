@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 )
 
 var pixiv_domain = "https://i.pximg.net/"
@@ -11,8 +12,9 @@ var client = &http.Client{}
 
 func main() {
 	handler := http.HandlerFunc(Serve)
-	http.ListenAndServe(":80", handler)
-	log.Printf("Started server")
+	port := getenv("SERVER_PORT", "80")
+	http.ListenAndServe(":"+port, handler)
+	log.Printf("Started server on port " + port)
 }
 
 func Serve(w http.ResponseWriter, r *http.Request) {
@@ -38,4 +40,12 @@ func Serve(w http.ResponseWriter, r *http.Request) {
 
 	w.Write(data)
 	return
+}
+
+func getenv(key, fallback string) string {
+	value := os.Getenv(key)
+	if len(value) == 0 {
+		return fallback
+	}
+	return value
 }
